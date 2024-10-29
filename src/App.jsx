@@ -1,11 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import styled, { keyframes, css } from 'styled-components';
-import { db } from './firebaseConfig';
-import { collection, addDoc, getDocs, query, orderBy, limit } from 'firebase/firestore';
+import React, { useState, useEffect } from "react";
+import styled, { keyframes, css } from "styled-components";
+import { db } from "./firebaseConfig";
+import {
+  collection,
+  addDoc,
+  getDocs,
+  query,
+  orderBy,
+  limit,
+} from "firebase/firestore";
 
-import asteroide from './assets/tessauroREX.png';
-import tessauro from './assets/TESSAURAOREX.png';
-import dinossaro from './assets/dinossaro.png';
+import asteroide from "./assets/tessauroREX.png";
+import dinossaro from "./assets/TESSAURAOREX.png";
+import tessauro from "./assets/braquissaro.png";
+import tiranossaro from "./assets/tiranossaro.png";
 
 // Animação de pulo para o personagem
 const jump = keyframes`
@@ -50,9 +58,18 @@ const FrostedScreen = styled.div`
   background: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(10px);
   z-index: 10;
+
+  img {
+    width: 200px;
+  }
+
+  h1 {
+    color: #278;
+    font-size: 50px;
+  }
 `;
 
-const Title = styled.h1`
+const Title = styled.h2`
   font-size: 2rem;
   color: #333;
   margin-bottom: 1rem;
@@ -92,16 +109,16 @@ const GameArea = styled.div`
 `;
 
 const Character = styled.div`
-  width: 50px;
-  height: 50px;
+  width: 100px;
+  height: 100px;
   position: absolute;
   bottom: 0;
   left: 50px;
-  background-image: url('${dinossaro}');
+  background-image: url("${dinossaro}");
   background-size: cover;
   background-repeat: no-repeat;
   ${(props) =>
-    props.isJumping &&
+    props.$isJumping &&
     css`
       animation: ${jump} 0.4s ease;
     `}
@@ -130,6 +147,18 @@ const GameOverScreen = styled.div`
   backdrop-filter: blur(8px);
 `;
 
+const GameOverTitle = styled.h1`
+  font-size: 50px;
+  margin-bottom: 20px;
+  color: #333;
+`;
+
+const PlayerScore = styled.h2`
+  font-size: 24px;
+  color: #666;
+  margin-bottom: 15px;
+`;
+
 const IconContainer = styled.div`
   display: flex;
   align-items: center;
@@ -151,7 +180,7 @@ const ScoreBoard = styled.div`
   width: 350px;
   text-align: center;
   position: relative;
-  top: 100px;
+  top: 5 0px;
 `;
 
 const ScoreList = styled.div`
@@ -163,7 +192,7 @@ const RetryButton = styled(Button)`
 `;
 
 function App() {
-  const [nickname, setNickname] = useState('');
+  const [nickname, setNickname] = useState("");
   const [showFrostedScreen, setShowFrostedScreen] = useState(true);
   const [isJumping, setIsJumping] = useState(false);
   const [obstacles, setObstacles] = useState([]);
@@ -175,7 +204,7 @@ function App() {
 
   const startGame = () => {
     if (!nickname) {
-      alert('Por favor, insira um nickname para começar!');
+      alert("Por favor, insira um nickname para começar!");
       return;
     }
     setShowFrostedScreen(false);
@@ -195,19 +224,19 @@ function App() {
 
   const saveScore = async () => {
     try {
-      await addDoc(collection(db, 'scores'), {
+      await addDoc(collection(db, "scores"), {
         nickname,
         score,
         date: new Date(),
       });
     } catch (error) {
-      console.error('Erro ao salvar pontuação: ', error);
+      console.error("Erro ao salvar pontuação: ", error);
     }
   };
 
   const fetchScores = async () => {
-    const scoresCollection = collection(db, 'scores');
-    const q = query(scoresCollection, orderBy('score', 'desc'), limit(15)); // Limitar a 15 primeiros
+    const scoresCollection = collection(db, "scores");
+    const q = query(scoresCollection, orderBy("score", "desc"), limit(15)); // Limitar a 15 primeiros
     const querySnapshot = await getDocs(q);
     const scoresData = querySnapshot.docs.map((doc) => doc.data());
     setScores(scoresData);
@@ -215,21 +244,20 @@ function App() {
 
   useEffect(() => {
     const handleKeyPress = (e) => {
-      if (e.code === 'Space') handleJump();
+      if (e.code === "Space") handleJump();
     };
-    window.addEventListener('keydown', handleKeyPress);
-    return () => window.removeEventListener('keydown', handleKeyPress);
+    window.addEventListener("keydown", handleKeyPress);
+    return () => window.removeEventListener("keydown", handleKeyPress);
   }, [isJumping, gameOver, gameStarted]);
 
   useEffect(() => {
     if (gameOver || !gameStarted) return;
 
+    // Define o intervalo inicial para os obstáculos (700ms)
     const obstacleInterval = setInterval(() => {
-      setObstacles((prev) => [
-        ...prev,
-        { id: Date.now(), position: 900 },
-      ]);
-    }, 1000); // Obstáculos mais frequentes
+      console.log("Criando obstáculo"); // Verificação de criação de obstáculo
+      setObstacles((prev) => [...prev, { id: Date.now(), position: 900 }]);
+    }, 700);
 
     const scoreInterval = setInterval(() => {
       if (!gameOver) setScore((prev) => prev + 1);
@@ -241,6 +269,8 @@ function App() {
     };
   }, [gameOver, gameStarted]);
 
+  // Aumenta a velocidade de movimento dos obstáculos a cada 100 pontos
+  // 1. Atualize o useEffect responsável por mover os obstáculos:
   useEffect(() => {
     if (gameOver || !gameStarted) return;
 
@@ -250,24 +280,26 @@ function App() {
           .map((obs) => ({ ...obs, position: obs.position - obstacleSpeed }))
           .filter((obs) => obs.position > -50)
       );
-    }, 25); // Intervalo menor para aumentar a velocidade dos obstáculos
-
-    const speedIncrease = setInterval(() => {
-      if (!gameOver) setObstacleSpeed((prevSpeed) => prevSpeed + 0.7); // Aumento mais rápido
-    }, 1000);
+    }, 25);
 
     return () => {
       clearInterval(moveObstacles);
-      clearInterval(speedIncrease);
     };
   }, [gameOver, gameStarted, obstacleSpeed]);
 
+  // 2. Substitua o useEffect de incremento de velocidade para este código:
+  useEffect(() => {
+    if (gameOver || !gameStarted) return;
+
+    // Aumenta a velocidade dos obstáculos a cada 50 pontos
+    if (score > 0 && score % 50 === 0) {
+      setObstacleSpeed((prevSpeed) => prevSpeed + 1);
+    }
+  }, [score, gameOver, gameStarted]);
+
   useEffect(() => {
     obstacles.forEach((obs) => {
-      const isColliding =
-        !isJumping &&
-        obs.position < 90 &&
-        obs.position > 30;
+      const isColliding = !isJumping && obs.position < 90 && obs.position > 30;
 
       if (isColliding) {
         setGameOver(true);
@@ -283,6 +315,8 @@ function App() {
       <FixedTitle>Jogo do Tessauro Rex</FixedTitle>
       {showFrostedScreen && (
         <FrostedScreen>
+          <img src={tiranossaro} />
+          <h1>Jogo do Tessauro Rex</h1>
           <Title>Digite seu Apelido</Title>
           <Input
             type="text"
@@ -297,7 +331,7 @@ function App() {
       <div>
         <h1>Pontuação: {score}</h1>
         <GameArea>
-          <Character isJumping={isJumping} />
+          <Character $isJumping={isJumping} />
           {obstacles.map((obstacle) => (
             <Obstacle
               key={obstacle.id}
@@ -307,6 +341,11 @@ function App() {
         </GameArea>
         {gameOver && (
           <GameOverScreen>
+            <GameOverTitle>Game Over</GameOverTitle>
+            <PlayerScore>
+              {nickname}: {score} pontos
+            </PlayerScore>{" "}
+            {/* Nome e pontuação do jogador */}
             <RetryButton onClick={() => window.location.reload()}>
               Jogar Novamente
             </RetryButton>
@@ -331,4 +370,3 @@ function App() {
 }
 
 export default App;
-
