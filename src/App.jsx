@@ -10,12 +10,10 @@ import {
   limit,
 } from "firebase/firestore";
 
-import asteroide from "./assets/tessauroREX.png";
-import dinossaro from "./assets/TESSAURAOREX.png";
-import tessauro from "./assets/braquissaro.png";
-import tiranossaro from "./assets/tiranossaro.png";
-
-import minoxidil from './assets/polar.png'
+import asteroide from "./assets/img";
+import dinossaro from "./assets/img.png";
+import tessauro from "./assets/img.png";
+import tiranossaro from "./assets/img.png";
 
 // Animação de pulo para o personagem
 const jump = keyframes`
@@ -131,9 +129,6 @@ const Obstacle = styled.div`
   position: absolute;
   bottom: 0;
   background-color: transparent;
-  background-image: url("${minoxidil}");
-  background-size: cover; /* Ajusta a imagem para cobrir o elemento */
-  background-repeat: no-repeat; /* Evita que a imagem se repita */
 `;
 
 const GameOverScreen = styled.div`
@@ -240,7 +235,7 @@ function App() {
 
   const fetchScores = async () => {
     const scoresCollection = collection(db, "scores");
-    const q = query(scoresCollection, orderBy("score", "desc"), limit(20)); // Limitar a 15 primeiros
+    const q = query(scoresCollection, orderBy("score", "desc")); // Mostra todos os documentos ordenados por pontuação
     const querySnapshot = await getDocs(q);
     const scoresData = querySnapshot.docs.map((doc) => doc.data());
     setScores(scoresData);
