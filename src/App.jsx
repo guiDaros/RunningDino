@@ -15,7 +15,7 @@ import dinossaro from "./assets/TESSAURAOREX.png";
 import tessauro from "./assets/braquissaro.png";
 import tiranossaro from "./assets/tiranossaro.png";
 
-import minoxidil from './assets/tadala.png'
+import minoxidil from './assets/polar.png'
 
 // Animação de pulo para o personagem
 const jump = keyframes`
