@@ -15,7 +15,7 @@ import dinossaro from "./assets/TESSAURAOREX.png";
 import tessauro from "./assets/braquissaro.png";
 import tiranossaro from "./assets/tiranossaro.png";
 
-import carteira from './assets/carteira-trabalho.png'
+import minoxidil from './assets/minoxidil.jpg'
 
 // Animação de pulo para o personagem
 const jump = keyframes`
@@ -125,15 +125,15 @@ const Character = styled.div`
       animation: ${jump} 0.4s ease;
     `}
 `;
-
 const Obstacle = styled.div`
   width: 40px;
-  height: 40px;
-  background-color: #ff4d4d;
+  height: 100px;
   position: absolute;
   bottom: 0;
-
-  background: url("${carteira}");
+  background-color: transparent;
+  background-image: url("${minoxidil}");
+  background-size: cover; /* Ajusta a imagem para cobrir o elemento */
+  background-repeat: no-repeat; /* Evita que a imagem se repita */
 `;
 
 const GameOverScreen = styled.div`
@@ -208,7 +208,7 @@ function App() {
 
   const startGame = () => {
     if (!nickname) {
-      alert("Por favor, insira um nickname para começar!");
+      alert("Por favor, insira um apelido para começar!");
       return;
     }
     setShowFrostedScreen(false);
@@ -345,7 +345,7 @@ function App() {
         </GameArea>
         {gameOver && (
           <GameOverScreen>
-            <GameOverTitle>Game Over</GameOverTitle>
+            <GameOverTitle>Bateu no Minoxidil</GameOverTitle>
             <PlayerScore>
               {nickname}: {score} pontos
             </PlayerScore>{" "}
