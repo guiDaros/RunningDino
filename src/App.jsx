@@ -15,6 +15,8 @@ import dinossaro from "./assets/TESSAURAOREX.png";
 import tessauro from "./assets/braquissaro.png";
 import tiranossaro from "./assets/tiranossaro.png";
 
+import carteira from './assets/carteira-trabalho.png'
+
 // Animação de pulo para o personagem
 const jump = keyframes`
   0% {
@@ -130,6 +132,8 @@ const Obstacle = styled.div`
   background-color: #ff4d4d;
   position: absolute;
   bottom: 0;
+
+  background: scr('${carteira}');
 `;
 
 const GameOverScreen = styled.div`
