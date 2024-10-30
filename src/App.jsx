@@ -297,7 +297,7 @@ function App() {
 
     // Aumenta a velocidade dos obstáculos a cada 50 pontos
     if (score > 0 && score % 50 === 0) {
-      setObstacleSpeed((prevSpeed) => prevSpeed + 25);
+      setObstacleSpeed((prevSpeed) => prevSpeed + 5);
     }
   }, [score, gameOver, gameStarted]);
 
