@@ -240,7 +240,7 @@ function App() {
 
   const fetchScores = async () => {
     const scoresCollection = collection(db, "scores");
-    const q = query(scoresCollection, orderBy("score", "desc"), limit(15)); // Limitar a 15 primeiros
+    const q = query(scoresCollection, orderBy("score", "desc"), limit(20)); // Limitar a 15 primeiros
     const querySnapshot = await getDocs(q);
     const scoresData = querySnapshot.docs.map((doc) => doc.data());
     setScores(scoresData);
@@ -261,7 +261,7 @@ function App() {
     const obstacleInterval = setInterval(() => {
       console.log("Criando obstáculo"); // Verificação de criação de obstáculo
       setObstacles((prev) => [...prev, { id: Date.now(), position: 900 }]);
-    }, 700);
+    }, 600);
 
     const scoreInterval = setInterval(() => {
       if (!gameOver) setScore((prev) => prev + 1);
@@ -297,13 +297,15 @@ function App() {
 
     // Aumenta a velocidade dos obstáculos a cada 50 pontos
     if (score > 0 && score % 50 === 0) {
-      setObstacleSpeed((prevSpeed) => prevSpeed + 1);
+      setObstacleSpeed((prevSpeed) => prevSpeed + 25);
     }
   }, [score, gameOver, gameStarted]);
 
+
+  //mudei aqui
   useEffect(() => {
     obstacles.forEach((obs) => {
-      const isColliding = !isJumping && obs.position < 90 && obs.position > 30;
+      const isColliding = !isJumping && obs.position < 90 && obs.position > 35;
 
       if (isColliding) {
         setGameOver(true);
