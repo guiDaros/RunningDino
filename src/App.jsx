@@ -133,7 +133,7 @@ const Obstacle = styled.div`
   position: absolute;
   bottom: 0;
 
-  background: scr('${carteira}');
+  background: url("${carteira}");
 `;
 
 const GameOverScreen = styled.div`
