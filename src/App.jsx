@@ -126,7 +126,7 @@ const Character = styled.div`
     `}
 `;
 const Obstacle = styled.div`
-  width: 40px;
+  width: 70px;
   height: 100px;
   position: absolute;
   bottom: 0;
